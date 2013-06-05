@@ -1,7 +1,6 @@
 if (!window.gw2emblem)
 	gw2emblem = {};
 
-
 gw2emblem.init = function(id, size) {
 	gw2emblem.paper = Raphael(id, size, size);
 
@@ -19,15 +18,28 @@ gw2emblem.init = function(id, size) {
 	return gw2emblem;
 };
 
-// Example: {"background_id":13,"foreground_id":40,"flags":["FlipBackgroundHorizontal" ,"background_color_id":673,"foreground_primary_color_id":584,"foreground_secondary_color_id":146}
+/*
+	Example:
+	{
+		"background_id":13,
+		"foreground_id":40,
+		"flags":["FlipBackgroundHorizontal"],
+		"background_color_id":673,
+		"foreground_primary_color_id":584,
+		"foreground_secondary_color_id":146
+	}
+*/
 gw2emblem.drawEmblemGw2 = function(gw2obj) {
-	var flags = gw2obj.flags;
+	var flags = gw2obj.flags; // TODO: Example - ["FlipBackgroundHorizontal","FlipBackgroundVertical"]
 
-	var colorBg = gw2emblem.color_defs[gw2obj.background_color_id],
-		color1 = gw2emblem.color_defs[gw2obj.foreground_primary_color_id],
-		color2 = gw2emblem.color_defs[gw2obj.foreground_secondary_color_id];
+	var colorBg = gw2emblem.color_defs[gw2obj.background_color_id] || '#000000',
+		color1 = gw2emblem.color_defs[gw2obj.foreground_primary_color_id] || '#FF0000',
+		color2 = gw2emblem.color_defs[gw2obj.foreground_secondary_color_id] || '#FFFFFF';
 
-	gw2emblem.drawEmblem(gw2emblem.defs[gw2obj.foreground_id], color1, color2, gw2emblem.bg_defs[gw2obj.background_id], colorBg);
+	var defFg = gw2emblem.defs[gw2obj.foreground_id] || '',
+		defBg = gw2emblem.bg_defs[gw2obj.background_id] || '';
+
+	gw2emblem.drawEmblem(defFg, color1, color2, defBg, colorBg);
 };
 
 gw2emblem.drawEmblem = function(defFg, color1, color2, defBg, colorBg) {
@@ -36,7 +48,7 @@ gw2emblem.drawEmblem = function(defFg, color1, color2, defBg, colorBg) {
 	paper.clear();
 
 	// set background
-	//paper.rect(0, 0, paper.width, paper.height).attr({'fill':gw2emblem.bg_color, 'stroke':gw2emblem.bg_color});
+	// paper.rect(0, 0, paper.width, paper.height).attr({'fill':gw2emblem.bg_color, 'stroke':gw2emblem.bg_color});
 	paper.image(gw2emblem.bg_img, 0, 0, paper.width, paper.height);
 
 	gw2emblem.drawEmblemBg(defBg, colorBg);
