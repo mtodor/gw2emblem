@@ -33,8 +33,9 @@ gw2emblem.drawEmblemGw2 = function(gw2obj) {
 	var flags = gw2obj.flags; // TODO: Example - ["FlipBackgroundHorizontal","FlipBackgroundVertical"]
 
 	var colorBg = gw2emblem.color_defs[gw2obj.background_color_id] || '#000000',
-		color1 = gw2emblem.color_defs[gw2obj.foreground_primary_color_id] || '#FF0000',
-		color2 = gw2emblem.color_defs[gw2obj.foreground_secondary_color_id] || '#FFFFFF';
+		color1 = gw2emblem.color_defs[gw2obj.foreground_secondary_color_id] || '#FFFFFF',
+		color2 = gw2emblem.color_defs[gw2obj.foreground_primary_color_id] || '#FF0000';
+
 
 	var defFg = gw2emblem.defs[gw2obj.foreground_id] || '',
 		defBg = gw2emblem.bg_defs[gw2obj.background_id] || '';
