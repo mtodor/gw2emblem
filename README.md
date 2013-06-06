@@ -33,11 +33,16 @@ Display GW2 Emblem with object fatched from [GW2 API] [2]:
 
 ####Notes:
 
-- "flags" proprty is ignored for now
+It's possible to use background color (instead of default image) - it's sent as 3rd argument for init function call, fe:
+
+    gw2emblem.init('gw2embelm-div', 128, 'transparent');
+    
+or
+
+    gw2emblem.init('gw2embelm-div', 128, '#3682a0');
 
 ####Future:
 
-- add support for "flags" property
 - tweak emblems
 - generate less detailed emblems (as option for smaller emblem defintion file)
 - add on-demand loading of emblem defintions to reduce initial loading time
