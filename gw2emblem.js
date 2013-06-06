@@ -1,19 +1,33 @@
 if (!window.gw2emblem)
 	gw2emblem = {};
 
-gw2emblem.init = function(id, size) {
+gw2emblem.flags_defs = {
+	"FlipBackgroundVertical": 1,
+	"FlipBackgroundHorizontal": 2,
+	"FlipForegroundVertical": 4,
+	"FlipForegroundHorizontal": 8
+};
+
+gw2emblem.init = function(id, size, bgColor) {
 	gw2emblem.paper = Raphael(id, size, size);
 
-	gw2emblem.pt2_color = '#000000';
-	gw2emblem.pt2_op = 0.3;
+	// used for shadow over color
+	gw2emblem.pto2_color = '#000000';
+	gw2emblem.pto2_op = 0.3;
 
+	// used for cross color transparency
+	gw2emblem.pt1_op = 0.3;
+
+	// used for emblem background
 	gw2emblem.bg_op = 0.3;
 
-	gw2emblem.bg_color = '#333333';
+	// paper background
+	gw2emblem.bg_color = bgColor || '';
 	gw2emblem.bg_img = 'img_bg.png';
 
-	// futur vars
+	// config required for transformation
 	gw2emblem.base_size = 256;
+	gw2emblem.flip = 0; // 1 - flipV_Bg, 2 - flipH_Bg, 4 - flipV_Fg, 8 - flipH_Fg
 
 	return gw2emblem;
 };
@@ -30,12 +44,11 @@ gw2emblem.init = function(id, size) {
 	}
 */
 gw2emblem.drawEmblemGw2 = function(gw2obj) {
-	var flags = gw2obj.flags; // TODO: Example - ["FlipBackgroundHorizontal","FlipBackgroundVertical"]
+	gw2emblem.setFlipsGW2(gw2obj.flags);
 
 	var colorBg = gw2emblem.color_defs[gw2obj.background_color_id] || '#000000',
 		color1 = gw2emblem.color_defs[gw2obj.foreground_secondary_color_id] || '#FFFFFF',
 		color2 = gw2emblem.color_defs[gw2obj.foreground_primary_color_id] || '#FF0000';
-
 
 	var defFg = gw2emblem.defs[gw2obj.foreground_id] || '',
 		defBg = gw2emblem.bg_defs[gw2obj.background_id] || '';
@@ -49,8 +62,10 @@ gw2emblem.drawEmblem = function(defFg, color1, color2, defBg, colorBg) {
 	paper.clear();
 
 	// set background
-	// paper.rect(0, 0, paper.width, paper.height).attr({'fill':gw2emblem.bg_color, 'stroke':gw2emblem.bg_color});
-	paper.image(gw2emblem.bg_img, 0, 0, paper.width, paper.height);
+	if (gw2emblem.bg_color !== '')
+		paper.rect(0, 0, paper.width, paper.height).attr({'fill':gw2emblem.bg_color, 'stroke':gw2emblem.bg_color});
+	else
+		paper.image(gw2emblem.bg_img, 0, 0, paper.width, paper.height);
 
 	gw2emblem.drawEmblemBg(defBg, colorBg);
 	gw2emblem.drawEmblemFg(defFg, color1, color2);
@@ -61,7 +76,12 @@ gw2emblem.drawEmblemFg = function(def, color1, color2) {
 		i;
 
 	var scale = paper.width / gw2emblem.base_size,
-		transformStr = (scale != 1) ? 'S'.concat(scale, ',', scale, ',0,0') : '';
+		transformStr = (scale != 1) ? 's'.concat(scale, ',', scale, ',0,0') : '';
+
+	if (gw2emblem.flip > 3)
+	{
+		transformStr = transformStr.concat(' s',((gw2emblem.flip & 8) !== 0) ? -1 : 1,',',((gw2emblem.flip & 4) !== 0) ? -1 : 1,',',gw2emblem.base_size/2,',',gw2emblem.base_size/2);
+	}
 
 	gw2emblem.paths = [];
 	var paths = gw2emblem.paths;
@@ -77,10 +97,16 @@ gw2emblem.drawEmblemFg = function(def, color1, color2) {
 			paths[paths.length] = paper.path(def.p2[i]).attr({'fill':color2, 'stroke':'none'}).transform(transformStr);
 	}
 
-	if (def.pt2)
+	if (def.pto2)
 	{
-		for(i=0;i<def.pt2.length;i++)
-			paths[paths.length] = paper.path(def.pt2[i]).attr({'fill':gw2emblem.pt2_color, 'stroke':'none', 'opacity':gw2emblem.pt2_op}).transform(transformStr);
+		for(i=0;i<def.pto2.length;i++)
+			paths[paths.length] = paper.path(def.pto2[i]).attr({'fill':gw2emblem.pto2_color, 'stroke':'none', 'opacity':gw2emblem.pto2_op}).transform(transformStr);
+	}
+
+	if (def.pt1)
+	{
+		for(i=0;i<def.pt1.length;i++)
+			paths[paths.length] = paper.path(def.pt1[i]).attr({'fill':color1, 'stroke':'none', 'opacity':gw2emblem.pt1_op}).transform(transformStr);
 	}
 
 	return paths;
@@ -92,7 +118,12 @@ gw2emblem.drawEmblemBg = function(def, color) {
 		opacity = def.t ? gw2emblem.bg_op : 1;
 
 	var scale = paper.width / gw2emblem.base_size,
-		transformStr = (scale != 1) ? 'S'.concat(scale, ',', scale, ',0,0') : '';
+		transformStr = (scale != 1) ? 's'.concat(scale, ',', scale, ',0,0') : '';
+
+	if ((gw2emblem.flip & 1) !== 0 || (gw2emblem.flip & 2) !== 0)
+	{
+		transformStr = transformStr.concat(' s',((gw2emblem.flip & 2) !== 0) ? -1 : 1,',',((gw2emblem.flip & 1) !== 0) ? -1 : 1,',',gw2emblem.base_size/2,',',gw2emblem.base_size/2);
+	}
 
 	gw2emblem.bg_paths = [];
 
@@ -104,6 +135,18 @@ gw2emblem.drawEmblemBg = function(def, color) {
 	}
 
 	return paths;
+};
+
+gw2emblem.setFlipsGW2 = function(flags) {
+	gw2emblem.flip = 0;
+
+	for(var i=0; i<flags.length; i++)
+	{
+		if (gw2emblem.flags_defs[flags[i]])
+		{
+			gw2emblem.flip += gw2emblem.flags_defs[flags[i]];
+		}
+	}
 };
 
 // GW2 Color Defs
