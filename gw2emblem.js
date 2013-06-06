@@ -59,24 +59,27 @@ gw2emblem.drawEmblemFg = function(def, color1, color2) {
 	var paper = gw2emblem.paper,
 		i;
 
+	var scale = paper.width / gw2emblem.base_size,
+		transformStr = (scale != 1) ? 'S'.concat(scale, ',', scale, ',0,0') : '';
+
 	gw2emblem.paths = [];
 	var paths = gw2emblem.paths;
 	if (def.p1)
 	{
 		for(i=0;i<def.p1.length;i++)
-			paths[paths.length] = paper.path(def.p1[i]).attr({'fill':color1, 'stroke':'none'});
+			paths[paths.length] = paper.path(def.p1[i]).attr({'fill':color1, 'stroke':'none'}).transform(transformStr);
 	}
 
 	if (def.p2)
 	{
 		for(i=0;i<def.p2.length;i++)
-			paths[paths.length] = paper.path(def.p2[i]).attr({'fill':color2, 'stroke':'none'});
+			paths[paths.length] = paper.path(def.p2[i]).attr({'fill':color2, 'stroke':'none'}).transform(transformStr);
 	}
 
 	if (def.pt2)
 	{
 		for(i=0;i<def.pt2.length;i++)
-			paths[paths.length] = paper.path(def.pt2[i]).attr({'fill':gw2emblem.pt2_color, 'stroke':'none', 'opacity':gw2emblem.pt2_op});
+			paths[paths.length] = paper.path(def.pt2[i]).attr({'fill':gw2emblem.pt2_color, 'stroke':'none', 'opacity':gw2emblem.pt2_op}).transform(transformStr);
 	}
 
 	return paths;
@@ -87,13 +90,16 @@ gw2emblem.drawEmblemBg = function(def, color) {
 		i,
 		opacity = def.t ? gw2emblem.bg_op : 1;
 
+	var scale = paper.width / gw2emblem.base_size,
+		transformStr = (scale != 1) ? 'S'.concat(scale, ',', scale, ',0,0') : '';
+
 	gw2emblem.bg_paths = [];
 
 	var paths = gw2emblem.bg_paths;
 	if (def.p)
 	{
 		for(i=0;i<def.p.length;i++)
-			paths[paths.length] = paper.path(def.p[i]).attr({'fill':color, 'stroke':'none', 'opacity': opacity});
+			paths[paths.length] = paper.path(def.p[i]).attr({'fill':color, 'stroke':'none', 'opacity': opacity}).transform(transformStr);
 	}
 
 	return paths;
