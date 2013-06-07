@@ -5,9 +5,15 @@
 
   [1]: https://github.com/DmitryBaranovskiy/raphael/ "Raphaël"
 
+####Demo
+
+Url: [http://toro-online.net/gw2emblemdemo] [3]
+
+  [3]: http://toro-online.net/gw2emblemdemo/ "Guild Wars 2 - GW2Emblem JavaScript Library Demo"
+
 ####How to use!
 
-Include following files into HTML: 
+Include following files into HTML:
 
     raphael-min.js
     gw2emblem-defs.js
@@ -18,7 +24,7 @@ Init gw2emblem in empty div with [ID = 'gw2embelm-div']:
     // 'gw2embelm-div' is div ID and 256 is size of emblem in pixels
     gw2emblem.init('gw2embelm-div', 256);
 
-Display GW2 Emblem with object fatched from [GW2 API] [2]: 
+Display GW2 Emblem with object fatched from [GW2 API] [2]:
 
   [2]: https://forum-en.guildwars2.com/forum/community/api/API-Documentation "GW2 API Docs"
 
@@ -36,7 +42,7 @@ Display GW2 Emblem with object fatched from [GW2 API] [2]:
 It's possible to use background color (instead of default image) - it's sent as 3rd argument for init function call, fe:
 
     gw2emblem.init('gw2embelm-div', 128, 'transparent');
-    
+
 or
 
     gw2emblem.init('gw2embelm-div', 128, '#3682a0');
@@ -49,5 +55,5 @@ or
 
 ####Author
 
-Mladen Todorovic  
+Mladen Todorovic
 mtodor@gmail.com
